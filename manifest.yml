@@ -6,4 +6,3 @@ applications:
     - go_buildpack
   env:
     GOVERSION: go1.13
-    PORT: 80
