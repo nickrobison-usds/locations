@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/nickrobison-usds/test-locations/responses"
 	"sync"
+
+	"github.com/nickrobison-usds/test-locations/responses"
 )
 
+// Template is the HTML template used to generate the Location outputs
 const Template = `
 <head>
 </head>
@@ -42,16 +44,17 @@ type LocationList struct {
 	mux       sync.Mutex
 }
 
+// AddLocation appends a new LocationResponse to the existing list
 func (l *LocationList) AddLocation(loc responses.LocationResponse) {
 	l.mux.Lock()
 	defer l.mux.Unlock()
 	l.Locations = append(l.Locations, loc)
 }
 
+//NewLocationList creates a new struct for holding the threadsafe list
 func NewLocationList() *LocationList {
-	locations := make([]responses.LocationResponse, 0)
 	return &LocationList{
-		Locations: locations,
+		Locations: make([]responses.LocationResponse, 0),
 		mux:       sync.Mutex{},
 	}
 }

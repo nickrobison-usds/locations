@@ -3,10 +3,11 @@ package responses
 import (
 	"context"
 	"fmt"
-	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
 	"strings"
 	"time"
+
+	"google.golang.org/api/option"
+	"google.golang.org/api/sheets/v4"
 )
 
 const timeLayout = "3:04:00 AM MST"
