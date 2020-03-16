@@ -38,7 +38,7 @@ func main() {
 func updateLocations(locations *LocationList) {
 	fmt.Println("Downloading the latest responses and formatting them")
 
-	r, err := responses.New(os.Getenv("SHEET_ID"), os.Getenv("CREDENTIALS"))
+	r, err := responses.New(os.Getenv("SHEET_ID"), []byte(os.Getenv("CREDENTIALS")))
 	if err != nil {
 		panic(err)
 	}

@@ -40,8 +40,8 @@ type ResponseProcessor struct {
 	service *sheets.SpreadsheetsService
 }
 
-func New(sheetID string, key string) (*ResponseProcessor, error) {
-	srv, err := sheets.NewService(context.Background(), option.WithCredentialsFile(key))
+func New(sheetID string, key []byte) (*ResponseProcessor, error) {
+	srv, err := sheets.NewService(context.Background(), option.WithCredentialsJSON(key))
 	if err != nil {
 		return nil, err
 	}
