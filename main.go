@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/nickrobison-usds/test-locations/responses"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/nickrobison-usds/test-locations/responses"
 )
 
 func handle(locations *LocationList) http.HandlerFunc {
@@ -32,7 +33,7 @@ func main() {
 	// Run the server
 	http.Handle("/", handle(locations))
 	log.Println("Listening")
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), nil))
 }
 
 func updateLocations(locations *LocationList) {
