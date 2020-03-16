@@ -6,26 +6,33 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 	"strings"
+	"time"
 )
 
+const timeLayout = "3:04:00 AM MST"
+const extendedFormatter = "15:04:05Z07:00"
+
 type LocationResponse struct {
-	ID           int
-	Timestamp    string
-	Name         string
-	Address      string
-	City         string
-	State        string
-	Zip          string
-	Days         []string
-	StartTime    string
-	EndTime      string
-	TestDate     string
-	Tests        string
-	ContactName  string
-	ContactPhone string
-	ContactEmail string
-	NewLocation  bool
-	TimeZone     string
+	ID        int
+	Timestamp string
+	Name      string
+	Address   string
+	City      string
+	State     string
+	Zip       string
+	Days      []string
+	// Quick hack to avoid dealing with imports in the template
+	StartTime_Schema string
+	StartTime_Hum    string
+	EndTime_Schema   string
+	EndTime_Hum      string
+	TestDate         string
+	Tests            string
+	ContactName      string
+	ContactPhone     string
+	ContactEmail     string
+	NewLocation      bool
+	TimeZone         string
 }
 
 type ResponseProcessor struct {
@@ -61,27 +68,37 @@ func (r *ResponseProcessor) GetResponses() ([]LocationResponse, error) {
 		//if timestamp == "" {
 		//	break
 		//}
+		start, err := time.Parse(timeLayout, fmt.Sprintf("%s %s", row[8].(string), row[19].(string)))
+		if err != nil {
+			panic(err)
+		}
+		end, err := time.Parse(timeLayout, fmt.Sprintf("%s %s", row[9].(string), row[19].(string)))
+		if err != nil {
+			panic(err)
+		}
 
 		// Parse a LocationResponse and add it to the array.
 		// The Google Sheet is pretty messed up, so we have to skip around a bit.
 		locations = append(locations, LocationResponse{
-			ID:           idx,
-			Timestamp:    timestamp,
-			Name:         row[2].(string),
-			Address:      row[3].(string),
-			City:         row[4].(string),
-			State:        row[5].(string),
-			Zip:          row[6].(string),
-			Days:         strings.Split(row[7].(string), ","),
-			StartTime:    row[8].(string),
-			EndTime:      row[9].(string),
-			TestDate:     row[13].(string),
-			Tests:        row[14].(string),
-			ContactName:  row[15].(string),
-			ContactPhone: row[16].(string),
-			ContactEmail: row[17].(string),
-			NewLocation:  row[18].(string) == "Yes",
-			TimeZone:     row[19].(string),
+			ID:               idx,
+			Timestamp:        timestamp,
+			Name:             row[2].(string),
+			Address:          row[3].(string),
+			City:             row[4].(string),
+			State:            row[5].(string),
+			Zip:              row[6].(string),
+			Days:             strings.Split(row[7].(string), ","),
+			StartTime_Schema: start.Format(extendedFormatter),
+			StartTime_Hum:    start.Format(time.Kitchen),
+			EndTime_Schema:   end.Format(extendedFormatter),
+			EndTime_Hum:      end.Format(time.Kitchen),
+			TestDate:         row[13].(string),
+			Tests:            row[14].(string),
+			ContactName:      row[15].(string),
+			ContactPhone:     row[16].(string),
+			ContactEmail:     row[17].(string),
+			NewLocation:      row[18].(string) == "Yes",
+			TimeZone:         row[19].(string),
 		})
 	}
 

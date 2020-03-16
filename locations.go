@@ -28,7 +28,7 @@ const Template = `
 	{{ $save := . }}
 	{{range .Days}}
 		<div itemprop="openingHoursSpecification" itemscope itemtype="http://schema.org/OpeningHoursSpecification">
-        <link itemprop="dayOfWeek" href="http://schema.org/{{.}}">{{.}}: <time itemprop="opens" content="{{$save.StartTime}}">{{$save.StartTime}}</time> - <time itemprop="closes" content="{{$save.EndTime}}">{{$save.EndTime}}</time>
+        <link itemprop="dayOfWeek" href="http://schema.org/{{.}}">{{.}}: <time itemprop="opens" content="{{$save.StartTime_Schema}}">{{$save.StartTime_Hum}}</time> - <time itemprop="closes" content="{{$save.EndTime_Schema}}">{{$save.EndTime_Hum}}</time>
     </div>
 	{{end}}
 	</div>
