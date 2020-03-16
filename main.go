@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/nickrobison-usds/test-locations/responses"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -10,13 +11,21 @@ import (
 
 func handle(locations *LocationList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "We have %d locations.\n", len(locations.locations))
+		t, err := template.New("webpage").Parse(Template)
+		if err != nil {
+			panic(err)
+		}
+		t.Execute(w, locations)
+		//if err != nil {
+		//	fmt
+		//}
+		//fmt.Fprintf(w, "We have %d locations.\n", len(locations.locations))
 	}
 }
 
 func main() {
 
-	locations := NewLocationList(100)
+	locations := NewLocationList()
 
 	// Update the location list
 	updateLocations(locations)
