@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/nickrobison-usds/test-locations/responses"
@@ -27,17 +28,20 @@ func main() {
 
 	locations := NewLocationList()
 
-	// Update the list every 5 minutes
-	ticker := time.NewTicker(5 * time.Minute)
+	// Update the list every couple of minutes
+	interval, err := strconv.ParseInt(os.Getenv("INTERVAL"), 10, 32)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Updating every %d minutes\n", interval)
+	ticker := time.NewTicker(time.Duration(interval) * time.Minute)
 	go func(locations *LocationList) {
-		select {
-		case <-ticker.C:
+		for {
 			updateLocations(locations)
+			<-ticker.C
 		}
 	}(locations)
 
-	// Update the location list
-	updateLocations(locations)
 	// Run the server
 	http.Handle("/", handle(locations))
 	port := os.Getenv("PORT")
