@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/nickrobison-usds/test-locations/responses"
 )
@@ -16,17 +17,24 @@ func handle(locations *LocationList) http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
+		locations.mux.Lock()
+		defer locations.mux.Unlock()
 		t.Execute(w, locations)
-		//if err != nil {
-		//	fmt
-		//}
-		//fmt.Fprintf(w, "We have %d locations.\n", len(locations.locations))
 	}
 }
 
 func main() {
 
 	locations := NewLocationList()
+
+	// Update the list every 5 minutes
+	ticker := time.NewTicker(5 * time.Minute)
+	go func(locations *LocationList) {
+		select {
+		case <-ticker.C:
+			updateLocations(locations)
+		}
+	}(locations)
 
 	// Update the location list
 	updateLocations(locations)
