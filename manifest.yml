@@ -1,8 +1,9 @@
 applications:
-- name: go_mod_app
+- name: locations
   memory: 512M
   instances: 1
   buildpacks:
     - go_buildpack
   env:
     GOVERSION: go1.13
+    PORT: 80

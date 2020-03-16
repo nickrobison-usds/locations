@@ -34,7 +34,7 @@ func main() {
 	http.Handle("/", handle(locations))
 	port := os.Getenv("PORT")
 	log.Printf("Listening on port: %s", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func updateLocations(locations *LocationList) {
